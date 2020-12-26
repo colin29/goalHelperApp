@@ -1,0 +1,8 @@
+.goalTitle{
+	font-size: 24px;
+}
+.goalDetails{
+	height:200px;
+	width:250px;
+	word-wrap: true
+}

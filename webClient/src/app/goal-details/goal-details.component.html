@@ -1,0 +1,17 @@
+<h2>Goal Details</h2>
+<ng-container *ngIf="goal">
+<div>
+  <label>
+    <input class="goalTitle" [(ngModel)]="goal.name" placeholder="name"/>
+  </label>
+</div>
+<br>
+<div>
+  <label>
+    <textarea class="goalDetails" [(ngModel)]="goal.desc" placeholder="details">
+  	</textarea>
+  </label>
+</div>
+</ng-container>
+<button (click)="goBack()">back</button>
+<button (click)="save()">save changes</button>
