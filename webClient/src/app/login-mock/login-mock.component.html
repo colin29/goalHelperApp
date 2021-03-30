@@ -1,0 +1,14 @@
+loginMock:<br>
+
+<ng-container *ngIf="(login.isLoggedIn$ | async); else elseBlock">
+	Logged in.
+	<button title="Logout"
+      (click)="login.logout()">Logout</button>
+</ng-container>
+<ng-template #elseBlock>
+Logged out.
+<button title="Login"
+      (click)="login.login('foo', 'pass')">Login</button>
+</ng-template>
+
+

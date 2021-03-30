@@ -14,6 +14,8 @@ import { InMemoryDataService } from './in-memory-data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { SandboxComponent } from './sandbox/sandbox.component';
 import { LoginComponent } from './login/login.component';
+import { LoginMockComponent } from './login-mock/login-mock.component';
+import { LoginService } from './login.service';
 
 
 @NgModule({
@@ -23,7 +25,8 @@ import { LoginComponent } from './login/login.component';
     MessagesComponent,
     GoalDetailsComponent,
     SandboxComponent,
-    LoginComponent
+    LoginComponent,
+    LoginMockComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +37,7 @@ import { LoginComponent } from './login/login.component';
     //   InMemoryDataService, { dataEncapsulation: false }
     // )
   ],
-  providers: [],
+  providers: [LoginService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

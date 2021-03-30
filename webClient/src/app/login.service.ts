@@ -26,6 +26,6 @@ export class LoginService {
 
 	logout() {
 		this.loggedIn.next(false);
-		this.router.navigate(['/login']);
+		this.router.navigate(['/']);
 	}
 }
