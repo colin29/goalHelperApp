@@ -1,3 +1,5 @@
+
+<ng-container *ngIf="(login.isLoggedIn$ | async)"> > // TODO
 <p>Goals:</p>
 <ul>
 	<li *ngFor="let goal of goals" (click)="toggleExpanded(goal)">
@@ -15,3 +17,5 @@
 	</label>
 	<button (click)="addGoal(goalName.value, goalDesc.value)">New Goal</button>
 </div>
+</ng-container>
+<ng-template #elseBlock>Content to render when condition is false.</ng-template>

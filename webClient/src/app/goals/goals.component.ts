@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Goal } from '../goal';
 import { GoalService } from '../goal.service';
+import { LoginService } from '../login.service';
 
 
 /*
@@ -17,7 +18,7 @@ export class GoalsComponent implements OnInit {
 	goals: Goal[];
 	isExpanded: Map<Goal, boolean> = new Map();
 
-	constructor(private goalService: GoalService) { }
+	constructor(private goalService: GoalService, private login: LoginService) { }
 
 	ngOnInit() {
 		this.getGoals();
