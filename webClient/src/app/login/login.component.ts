@@ -25,13 +25,13 @@ export class LoginComponent implements OnInit {
 	async initGoogleAuth(): Promise<void> {
 		//  Create a new Promise where the resolve 
 		// function is the callback passed to gapi.load
-		const pload = new Promise((resolve) => {
+		const gapiLoaded = new Promise((resolve) => {
 			gapi.load('auth2', resolve);
 		});
 
 		// When the first promise resolves, it means we have gapi
 		// loaded and that we can call gapi.init
-		return pload.then(async () => {
+		return gapiLoaded.then(async () => {
 			await gapi.auth2
 				.init({ client_id: '151216529726-ln270mf9qr867bf5ptao8l3r2i5q0iuf.apps.googleusercontent.com' })
 				.then(auth => {

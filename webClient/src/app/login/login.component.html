@@ -1,7 +1,4 @@
-<p>
-  login works!
-</p>
-<button *ngIf="user==null"  (click)="authenticate()">Authenticate</button>
+<button *ngIf="user==null"  (click)="authenticate()">Login</button>
 <ng-container *ngIf="user!=null">
 Logged in.
 <button  (click)="logout();">Logout</button>	

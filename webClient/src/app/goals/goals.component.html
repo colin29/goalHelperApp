@@ -1,4 +1,4 @@
-<ng-container *ngIf="(login.isLoggedIn$ | async)">
+<ng-container *ngIf="(login.isLoggedIn$ | async); else notLoggedInMsg">
 <div class="goalsPanel">
 <p>Goals:</p>
 <ul>
@@ -19,3 +19,4 @@
 </div>
 </div> 
 </ng-container>
+<ng-template #notLoggedInMsg>Login to see goals</ng-template>
