@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-
+import { NgZone } from '@angular/core';
+import { ApplicationRef } from '@angular/core';
 
 
 
@@ -10,24 +11,83 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable()
 export class LoginService {
 
-	private loggedIn = new BehaviorSubject<boolean>(false);
+	authInstance: gapi.auth2.GoogleAuth;
+	gapiSetup: boolean;
 
-	get isLoggedIn$() {
-		return this.loggedIn.asObservable();
+	/** currentUser.value being non-null --> logged in, and vice versa**/
+	private currentUser = new BehaviorSubject<gapi.auth2.GoogleUser>(null);
+
+	constructor(private router: Router, private ngZone: NgZone, private application: ApplicationRef) {
 	}
 
-	constructor(private router: Router) {
+
+
+	async initGoogleAuth(): Promise<void> {
+		//  Create a new Promise where the resolve
+		// function is the callback passed to gapi.load
+		const gapiLoaded = new Promise((resolve) => {
+			gapi.load('auth2', resolve);
+		});
+
+		// When the first promise resolves, it means we have gapi
+		// loaded and that we can call gapi.init
+		return gapiLoaded.then(async () => {
+			await gapi.auth2
+				.init({ client_id: '151216529726-ln270mf9qr867bf5ptao8l3r2i5q0iuf.apps.googleusercontent.com' })
+				.then(auth => {
+					this.gapiSetup = true;
+					this.authInstance = auth;
+				}, reason => console.log("auth2 init failed", reason));
+		});
 	}
 
-	login(username: string, password: string) {
-		if (username !== '' && password !== '') {
-			this.loggedIn.next(true);
-			this.router.navigate(['/']);
+
+	async authenticate() {
+		// Initialize gapi if not done yet
+		if (!this.gapiSetup) {
+			await this.initGoogleAuth();
 		}
+
+		// Resolve or reject signin Promise. This promise returns user
+		new Promise(async () => {
+			await this.authInstance.signIn().then(
+				user => this.updateLoggedIn(user),
+				(error) => console.log("Error: " + JSON.stringify(error)));
+		});
+	}
+
+
+
+	get currentUser$() {
+		return this.currentUser.asObservable();
+	}
+
+
+	login() {
+		this.authenticate();
 	}
 
 	logout() {
-		this.loggedIn.next(false);
-		this.router.navigate(['/']);
+		console.log("current user", this.currentUser);
+		console.log("Trying to log out");
+		if (this.currentUser.value) {
+			this.authInstance.signOut()
+				.then(() => this.updateLoggedOut())
+				.catch(err => console.log("Error while signing out: " + err))
+		} else {
+			console.log("Tried calling logout but not logged in")
+		}
+	}
+	updateLoggedIn(user) {
+		this.currentUser.next(user);
+		this.ngZone.run(() => this.router.navigate(['/']));
+		this.application.tick();
+		console.log("Successfully logged in");
+	}
+	updateLoggedOut() {
+		this.currentUser.next(null);
+		this.ngZone.run(() => this.router.navigate(['/']));
+		this.application.tick();
+		console.log("Successfully logged out");
 	}
 }

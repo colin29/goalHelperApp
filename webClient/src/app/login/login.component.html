@@ -1,5 +1,5 @@
-<button *ngIf="user==null"  (click)="authenticate()">Login</button>
-<ng-container *ngIf="user!=null">
-Logged in.
-<button  (click)="logout();">Logout</button>	
-</ng-container>
+<button *ngIf="(login.currentUser$ | async)==null; else loggedInOptions" (click)="login.login()">Login</button>
+
+<ng-template #loggedInOptions>
+Logged in. <button  (click)="login.logout();">Logout</button>	
+</ng-template>
