@@ -1,4 +1,4 @@
-<ng-container *ngIf="(login.isLoggedIn$ | async); else notLoggedInMsg">
+<ng-container *ngIf="(login.currentUser$|async)!=null; else notLoggedInMsg">
 <div class="goalsPanel">
 <p>Goals:</p>
 <ul>

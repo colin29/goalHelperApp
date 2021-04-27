@@ -8,6 +8,7 @@ let db;
 (async () => {
 	await client.connect();
 	 db = client.db('goalHelperApp');
+	 // getGoalsByUser("107254778077007667014")
 })().catch(e => {
     console.log("Couldn't connect to db: ", e)
 });
@@ -27,21 +28,42 @@ let db;
 
 const goalRoutes = (app, fs) => {
 	
-	app.get('/api/goals', (req, res) => {
-		// Get all goals
-		console.log("got GET on /goals");
-		res.setHeader('Content-Type', 'application/json');
+	
+	app.get('/api/goals', (req, res)=>{
+			console.log("got GET on /goals");
+		let userid = req.params.userid;
+		console.log("requested goals for user", userid);
 
+		res.setHeader('Content-Type', 'application/json');
 		let goals;
 		(async () => {
-			goals = await getAllGoals();
-			console.log(`Fetched Goals: ${goals}`)
-			console.log(goals)
+			goals = await getGoalsByUser("107254778077007667014")
+			console.log("Fetched Goals:", goals)
     		res.end(JSON.stringify(goals));
 		})()
 	});
+
+
+	/**
+		Get all goals
+	*/
+	// app.get('/api/goals', (req, res) => {
+	// 	console.log("got GET on /goals");
+	// 	res.setHeader('Content-Type', 'application/json');
+
+	// 	let goals;
+	// 	(async () => {
+	// 		goals = await getAllGoals();
+	// 		console.log(`Fetched Goals: ${goals}`)
+	// 		console.log(goals)
+ //    		res.end(JSON.stringify(goals));
+	// 	})()
+	// });
+
+	/**
+		Get goal by id
+	*/
 	app.get('/api/goals/:id', (req, res) => {
-		// Get goal by id
 		let id = parseInt(req.params.id);
 		let goal = null;
 		console.log("got GET on /goals id=", id);
@@ -56,10 +78,10 @@ const goalRoutes = (app, fs) => {
 	});
 
 	/**
-		Request: Goal should include name and optionally desc
+		Add a new goal
+		Request: Goal must contain name, desc is optional.
 	*/
 	app.post('/api/goals', (req, res) => {
-		// Add new goal
     	res.write('Reached goals: PUT\n');
     	(async () => {
     		goal = req.body;
@@ -109,6 +131,18 @@ module.exports = goalRoutes;
 async function getAllGoals(){
 	const collection = db.collection('goals')
     const query = {};
+    const options = {
+      sort: { id: 1 }, 
+      projection: { _id: 0},
+    };
+   const goals = await collection.find(query, options).toArray();
+   console.log(goals);
+   return goals;
+}
+
+async function getGoalsByUser(userid){
+	const collection = db.collection('goals')
+    const query = {user_id : userid};
     const options = {
       sort: { id: 1 }, 
       projection: { _id: 0},

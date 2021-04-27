@@ -12,10 +12,26 @@ import { LoginService } from './../login.service';
 })
 export class LoginComponent implements OnInit {
 
-	constructor(public login: LoginService) { }
+	user: gapi.auth2.GoogleUser;
+	profile: gapi.auth2.BasicProfile;
+
+	constructor(public loginService: LoginService) { }
 
 	ngOnInit() {
 
+	}
+
+	async login() {
+		this.loginService.login().then((user) => {
+			console.log("Got user", user)
+			this.user = user as gapi.auth2.GoogleUser;
+			this.profile = this.user.getBasicProfile();
+		},
+			(reason) => console.log("Failed", reason));
+	}
+	async logout() {
+		await this.loginService.logout()
+		this.user = null;
 	}
 
 

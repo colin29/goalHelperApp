@@ -1,5 +1,6 @@
-<button *ngIf="(login.currentUser$ | async)==null; else loggedInOptions" (click)="login.login()">Login</button>
+<button *ngIf="(loginService.currentUser$ | async)==null; else loggedInDisplay" (click)="login()">Login</button>
 
-<ng-template #loggedInOptions>
-Logged in. <button  (click)="login.logout();">Logout</button>	
+<ng-template #loggedInDisplay>
+<p>Logged in as {{profile.getName()}}  ({{profile.getId()}})</p>
+<button  (click)="logout();">Logout</button>	
 </ng-template>

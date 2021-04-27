@@ -48,12 +48,14 @@ export class LoginService {
 			await this.initGoogleAuth();
 		}
 
-		// Resolve or reject signin Promise. This promise returns user
-		new Promise(async () => {
-			await this.authInstance.signIn().then(
-				user => this.updateLoggedIn(user),
-				(error) => console.log("Error: " + JSON.stringify(error)));
-		});
+
+		return this.authInstance.signIn().then(
+			(user) => {
+				this.updateLoggedIn(user);
+				return user;
+			}
+			,
+			(error) => console.log("Error: " + JSON.stringify(error)));
 	}
 
 
@@ -63,11 +65,11 @@ export class LoginService {
 	}
 
 
-	login() {
-		this.authenticate();
+	async login() {
+		return this.authenticate();
 	}
 
-	logout() {
+	async logout() {
 		console.log("current user", this.currentUser);
 		console.log("Trying to log out");
 		if (this.currentUser.value) {
@@ -78,16 +80,26 @@ export class LoginService {
 			console.log("Tried calling logout but not logged in")
 		}
 	}
-	updateLoggedIn(user) {
+	private updateLoggedIn(user) {
 		this.currentUser.next(user);
 		this.ngZone.run(() => this.router.navigate(['/']));
 		this.application.tick();
 		console.log("Successfully logged in");
 	}
-	updateLoggedOut() {
+	private updateLoggedOut() {
 		this.currentUser.next(null);
 		this.ngZone.run(() => this.router.navigate(['/']));
 		this.application.tick();
 		console.log("Successfully logged out");
+	}
+
+	//Throws an error if not logged in
+	getUserId(): string {
+		const user = this.currentUser.value; // atomic access
+		if (user != null) {
+			return user.getBasicProfile().getId();
+		} else {
+			throw new Error("Not logged in");
+		}
 	}
 }

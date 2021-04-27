@@ -24,8 +24,11 @@ export class GoalService {
 	};
 
 	getGoals(): Observable<Goal[]> {
-		// TODO: send the message _after_ fetching goals
+
+		// Fetch user id from login service
 		this.messageService.add('GoalService: fetched goals');
+
+
 		return this.http.get<Goal[]>(this.goalsUrl);
 	}
 	getGoal(id: number): Observable<Goal> {
