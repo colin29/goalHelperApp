@@ -21,7 +21,6 @@ export class GoalsComponent implements OnInit {
 	constructor(private goalService: GoalService, private login: LoginService) { }
 
 	ngOnInit() {
-		this.getGoals();
 	}
 
 	toggleExpanded(goal: Goal) {

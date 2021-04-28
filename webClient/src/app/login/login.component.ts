@@ -12,8 +12,7 @@ import { LoginService } from './../login.service';
 })
 export class LoginComponent implements OnInit {
 
-	user: gapi.auth2.GoogleUser;
-	profile: gapi.auth2.BasicProfile;
+	userProfile: gapi.auth2.BasicProfile;
 
 	constructor(public loginService: LoginService) { }
 
@@ -24,14 +23,12 @@ export class LoginComponent implements OnInit {
 	async login() {
 		this.loginService.login().then((user) => {
 			console.log("Got user", user)
-			this.user = user as gapi.auth2.GoogleUser;
-			this.profile = this.user.getBasicProfile();
+			this.userProfile = this.loginService.getUserProfile()
 		},
 			(reason) => console.log("Failed", reason));
 	}
 	async logout() {
 		await this.loginService.logout()
-		this.user = null;
 	}
 
 

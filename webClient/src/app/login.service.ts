@@ -93,11 +93,19 @@ export class LoginService {
 		console.log("Successfully logged out");
 	}
 
-	//Throws an error if not logged in
+	/**Throws: error if not logged in*/
 	getUserId(): string {
 		const user = this.currentUser.value; // atomic access
 		if (user != null) {
 			return user.getBasicProfile().getId();
+		} else {
+			throw new Error("Not logged in");
+		}
+	}
+	getUserProfile(): gapi.auth2.BasicProfile {
+		const user = this.currentUser.value; // atomic access
+		if (user != null) {
+			return user.getBasicProfile();
 		} else {
 			throw new Error("Not logged in");
 		}

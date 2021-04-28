@@ -3,6 +3,7 @@ import { Observable, throwError, of } from 'rxjs';
 import { Goal } from './goal';
 
 import { MessageService } from './message.service';
+import { LoginService } from './login.service';
 
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -13,7 +14,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 	providedIn: 'root'
 })
 export class GoalService {
-	constructor(private http: HttpClient, private messageService: MessageService) { }
+	constructor(private http: HttpClient, private messageService: MessageService, private loginService: LoginService) { }
 
 
 	private goalsUrl = 'api/goals';  // URL to web api
@@ -23,13 +24,20 @@ export class GoalService {
 		headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 	};
 
+
+	// Get goals for current user
+	// throws: error if user is not logged in
 	getGoals(): Observable<Goal[]> {
 
 		// Fetch user id from login service
 		this.messageService.add('GoalService: fetched goals');
 
-
-		return this.http.get<Goal[]>(this.goalsUrl);
+		let userid = this.loginService.getUserId()
+		return this.http.get<Goal[]>(this.goalsUrl, {
+			params: {
+				userid: userid,
+			}
+		});
 	}
 	getGoal(id: number): Observable<Goal> {
 		this.log(`getGoal(${id}) called`);
