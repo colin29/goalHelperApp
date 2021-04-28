@@ -21,6 +21,15 @@ export class GoalsComponent implements OnInit {
 	constructor(private goalService: GoalService, private login: LoginService) { }
 
 	ngOnInit() {
+		this.login.currentUser$.subscribe((user) => {
+			console.log("goals.component detected change in user", user);
+			if (user) {
+				console.log("goals.component detected login")
+				this.getGoals();
+			} else {
+				// this.goals = [];
+			}
+		}
 	}
 
 	toggleExpanded(goal: Goal) {
@@ -40,8 +49,14 @@ export class GoalsComponent implements OnInit {
 	}
 	getGoals() {
 		this.goalService.getGoals()
-			.subscribe(goals => this.goals = goals);
+			.subscribe(goals => {
+				this.goals = goals
+				console.log("Goals:", this.goals);
+			},
+				reason => console.log("Failed to get goals", reason));
 	}
+
+
 
 
 }

@@ -30,6 +30,7 @@ export class GoalService {
 	getGoals(): Observable<Goal[]> {
 
 		// Fetch user id from login service
+		console.log("fetching goals");
 		this.messageService.add('GoalService: fetched goals');
 
 		let userid = this.loginService.getUserId()

@@ -25,7 +25,7 @@ export class GoalDetailsComponent implements OnInit {
 
 	getHero(): void {
 		const id = +this.route.snapshot.paramMap.get('id');
-		this.goalService.getGoal(id).subscribe(goal => {
+		this.goalService.fetchGoal(id).subscribe(goal => {
 			this.log(`got goal '${goal.name}'`);
 			this.goal = goal;
 		}, err => this.log(`error getting goal: (${err})`))

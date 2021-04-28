@@ -31,13 +31,13 @@ const goalRoutes = (app, fs) => {
 	
 	app.get('/api/goals', (req, res)=>{
 			console.log("got GET on /goals");
-		let userid = req.params.userid;
+		let userid = req.query.userid;
 		console.log("requested goals for user", userid);
 
 		res.setHeader('Content-Type', 'application/json');
 		let goals;
 		(async () => {
-			goals = await getGoalsByUser("107254778077007667014")
+			goals = await getGoalsByUser(userid)
 			console.log("Fetched Goals:", goals)
     		res.end(JSON.stringify(goals));
 		})()
@@ -148,7 +148,7 @@ async function getGoalsByUser(userid){
       projection: { _id: 0},
     };
    const goals = await collection.find(query, options).toArray();
-   console.log(goals);
+   // console.log(goals);
    return goals;
 }
 
@@ -156,7 +156,7 @@ async function getGoal(id){
     const collection = db.collection('goals');
     const query = {_id : id};
     const goal = await collection.findOne(query);
-    console.log("Got goal from db: " + JSON. stringify(goal));
+    // console.log("Got goal from db: " + JSON. stringify(goal));
     return goal;
 }
 async function addGoal(goal){
