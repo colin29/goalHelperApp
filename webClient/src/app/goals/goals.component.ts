@@ -44,13 +44,16 @@ export class GoalsComponent implements OnInit {
 		console.log(`${goal.name} expanded=${this.isExpanded.get(goal)}`);
 	}
 
+
 	addGoal(name: string, desc: string) {
+		// ._id field will be filled in by server.
 		let g = { name: name, desc: desc }
 		this.goalService.addGoal(g as Goal).subscribe(goal => {
 			this.goals.push(goal);
 		});
 	}
 	deleteGoal(goal: Goal) {
+		console.log("deleting: ", goal);
 		this.goals = this.goals.filter(g => g !== goal);
 		this.goalService.deleteGoal(goal).subscribe();
 	}

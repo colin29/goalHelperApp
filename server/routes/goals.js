@@ -150,7 +150,7 @@ async function getGoalsByUser(userid){
     const query = {user_id : userid};
     const options = {
       sort: { id: 1 }, 
-      projection: { _id: 0},
+      projection: {},
     };
    const goals = await collection.find(query, options).toArray();
    // console.log(goals);

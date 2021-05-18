@@ -3,9 +3,9 @@
 <p>Goals:</p>
 <ul>
 	<li *ngFor="let goal of goals" (click)="toggleExpanded(goal)">
-		[id={{goal.id}}] {{goal.name}} <button class="delete" title="delete goal"
+		[id={{goal._id}}] {{goal.name}} <button class="delete" title="delete goal"
       (click)="deleteGoal(goal)">x</button>
-		<div *ngIf="isExpanded.get(goal)">{{goal.desc? goal.desc : "(No description)"}} <a routerLink="/goal-details/{{goal.id}}">Edit</a></div>
+		<div *ngIf="isExpanded.get(goal)">{{goal.desc? goal.desc : "(No description)"}} <a routerLink="/goal-details/{{goal._id}}">Edit</a></div>
 	</li>
 </ul>
 <div>

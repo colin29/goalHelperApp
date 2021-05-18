@@ -46,17 +46,23 @@ export class GoalService {
 		return this.http.get<Goal>(url)
 	}
 	addGoal(goal: Goal): Observable<Goal> {
-		let userid = this.loginService.getUserId()
+		const userid = this.loginService.getUserId()
 		return this.http.post(this.goalsUrl, { goal: goal, userid: userid }, { 'responseType': 'text' }).pipe(
 			tap((resp: Goal) => console.log("got resp: ", resp, "type: ", typeof (resp))),
 			tap((newGoal: Goal) => this.log(`added hero w/ id=${newGoal.id}`))
 		);
 	}
 	deleteGoal(goal: Goal | number): Observable<Goal> {
-		const id = typeof goal === 'number' ? goal : goal.id;
+		const id = typeof goal === 'number' ? goal : goal._id;
 		const url = `${this.goalsUrl}/${id}`;
+		const userid = this.loginService.getUserId()
 
-		return this.http.delete<Goal>(url, this.httpOptions).pipe(
+
+		return this.http.delete<Goal>(url, {
+			params: {
+				userid: userid,
+			}
+		}).pipe(
 			tap(_ => this.log(`deleted hero id=${id}`))
 		);
 	}
