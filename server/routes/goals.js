@@ -39,7 +39,7 @@ const goalRoutes = (app, fs) => {
 		let goals;
 		(async () => {
 			goals = await getGoalsByUser(userid)
-			console.log("Fetched Goals:", goals)
+			console.log("Fetched Goals:", goals.length)
     		res.end(JSON.stringify(goals));
 		})()
 	});
@@ -128,6 +128,7 @@ const goalRoutes = (app, fs) => {
 		(async () => {
 			await deleteGoal(id);
 			res.end(JSON.stringify(true))
+			console.log("Deleted goal", id)
 		})().catch(err=>console.log("Error: " + err));
 	});
 };
