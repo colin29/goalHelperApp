@@ -99,7 +99,7 @@ export class LoginService {
 		if (user != null) {
 			return user.getBasicProfile().getId();
 		} else {
-			throw new Error("Not logged in");
+			throw new NotLoggedInError("Not logged in");
 		}
 	}
 	getUserProfile(): gapi.auth2.BasicProfile {
@@ -107,7 +107,17 @@ export class LoginService {
 		if (user != null) {
 			return user.getBasicProfile();
 		} else {
-			throw new Error("Not logged in");
+			throw new NotLoggedInError("Not logged in");
 		}
 	}
+
+
+
 }
+
+export class NotLoggedInError extends Error {
+	constructor(message) {
+		super(message);
+	}
+}
+

@@ -2,6 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Goal } from '../goal';
 import { GoalService } from '../goal.service';
 import { LoginService } from '../login.service';
+import { NotLoggedInError } from '../login.service';
+
+import { ChangeDetectorRef } from '@angular/core';
+
+
+
+
 
 
 /*
@@ -18,14 +25,14 @@ export class GoalsComponent implements OnInit {
 	goals: Goal[];
 	isExpanded: Map<Goal, boolean> = new Map();
 
-	constructor(private goalService: GoalService, private login: LoginService) { }
+	constructor(private goalService: GoalService, private login: LoginService, private changeDetector: ChangeDetectorRef) { }
 
 	ngOnInit() {
 		this.login.currentUser$.subscribe((user) => {
 			console.log("goals.component detected change in user", user);
 			if (user) {
 				console.log("goals.component detected login")
-				this.getGoals();
+				this.fetchGoalsAndUpdate();
 			} else {
 				// this.goals = [];
 			}
@@ -47,13 +54,20 @@ export class GoalsComponent implements OnInit {
 		this.goals = this.goals.filter(g => g !== goal);
 		this.goalService.deleteGoal(goal).subscribe();
 	}
-	getGoals() {
-		this.goalService.getGoals()
-			.subscribe(goals => {
-				this.goals = goals
-				console.log("Goals:", this.goals);
-			},
-				reason => console.log("Failed to get goals", reason));
+	fetchGoalsAndUpdate() {
+
+		try {
+			this.goalService.getGoals()
+				.subscribe(goals => {
+					this.goals = goals
+					console.log("Goals:", this.goals);
+					this.changeDetector.detectChanges();
+				},
+					reason => console.log("Failed to get goals", reason));
+		} catch (error: NotLoggedInError) {
+			// No special handling needed.
+		}
+
 	}
 
 
