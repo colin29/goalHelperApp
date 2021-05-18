@@ -46,15 +46,18 @@ export class GoalsComponent implements OnInit {
 
 
 	addGoal(name: string, desc: string) {
-		// ._id field will be filled in by server.
+		// goal id will be set by the server.
 		let g = { name: name, desc: desc }
 		this.goalService.addGoal(g as Goal).subscribe(goal => {
+			console.log("Got new goal from server: ", goal, typeof goal);
 			this.goals.push(goal);
+			this.changeDetector.detectChanges();
 		});
 	}
 	deleteGoal(goal: Goal) {
-		console.log("deleting: ", goal);
 		this.goals = this.goals.filter(g => g !== goal);
+		this.changeDetector.detectChanges();
+
 		this.goalService.deleteGoal(goal).subscribe();
 	}
 	fetchGoalsAndUpdate() {

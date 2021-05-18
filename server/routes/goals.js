@@ -81,9 +81,9 @@ const goalRoutes = (app, fs) => {
 	/**
 		Add a new goal
 		Request: Goal must contain name, desc is optional.
+		Response: the goal
 	*/
 	app.post('/api/goals', (req, res) => {
-    	res.write('Reached goals: PUT\n');
     	(async () => {
     		const body = req.body;
     		const goal = body.goal;
@@ -91,12 +91,13 @@ const goalRoutes = (app, fs) => {
     		console.log(`Add goal: ${goal} ${userid} `)
     		if(userid && goal){
     			goal.user_id = userid;
-    			addGoal(goal)
-    			.then(()=>res.end("Added Goal"))
-    			.catch((err)=>res.end("Adding goal failed: " + err))
-    			
-    		}else{
-    			res.end('No goal was provided');
+    			await addGoal(goal)
+    			.then(()=>{
+			    	res.setHeader('Content-Type', 'application/json');
+	    			res.end(JSON.stringify(goal));
+    			}).catch((err)=>res.end("Adding goal failed: " + err))
+			}else{
+    			res.end('Both goal and userid required');
     		}
     	})()
 	});
@@ -164,11 +165,14 @@ async function getGoal(id){
     // console.log("Got goal from db: " + JSON. stringify(goal));
     return goal;
 }
-/** Goal is assumed to be valid and is added as is */
+/** Goal is assumed to be valid and is added as is
+	Side Effects: sets goal id
+ */
 async function addGoal(goal){
 	const collection = db.collection('goals');
 	goal._id = await getNextGoalId(); 
-	collection.insertOne(goal)
+	await collection.insertOne(goal)
+	return goal;
 }
 
 async function getNextGoalId(){
@@ -179,10 +183,6 @@ async function getNextGoalId(){
    return document.sequence_value;
 }
 
-function addNewGoalTest(){
-	let goal = {name: "Test goal"} // desc is null
-	addGoal(goal);
-}
 
 // False most likely indicates goal id wasn't found
 async function updateGoal(id, goal){
