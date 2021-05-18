@@ -65,7 +65,7 @@ export class GoalsComponent implements OnInit {
 				},
 					reason => console.log("Failed to get goals", reason));
 		} catch (error: NotLoggedInError) {
-			// No special handling needed.
+			// No action needed
 		}
 
 	}

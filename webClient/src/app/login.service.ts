@@ -93,7 +93,7 @@ export class LoginService {
 		console.log("Successfully logged out");
 	}
 
-	/**Throws: error if not logged in*/
+	/**Throws: NotLoggedInError if not logged in*/
 	getUserId(): string {
 		const user = this.currentUser.value; // atomic access
 		if (user != null) {

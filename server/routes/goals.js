@@ -29,6 +29,7 @@ let db;
 const goalRoutes = (app, fs) => {
 	
 	
+	/** Gets a user's goals (No authentication atm)	*/
 	app.get('/api/goals', (req, res)=>{
 			console.log("got GET on /goals");
 		let userid = req.query.userid;
@@ -84,9 +85,13 @@ const goalRoutes = (app, fs) => {
 	app.post('/api/goals', (req, res) => {
     	res.write('Reached goals: PUT\n');
     	(async () => {
-    		goal = req.body;
-    		if(goal){
-    			addGoal(req.body)
+    		const body = req.body;
+    		const goal = body.goal;
+    		const userid = body.userid;
+    		console.log(`Add goal: ${goal} ${userid} `)
+    		if(userid && goal){
+    			goal.user_id = userid;
+    			addGoal(goal)
     			.then(()=>res.end("Added Goal"))
     			.catch((err)=>res.end("Adding goal failed: " + err))
     			
@@ -159,6 +164,7 @@ async function getGoal(id){
     // console.log("Got goal from db: " + JSON. stringify(goal));
     return goal;
 }
+/** Goal is assumed to be valid and is added as is */
 async function addGoal(goal){
 	const collection = db.collection('goals');
 	goal._id = await getNextGoalId(); 

@@ -26,7 +26,7 @@ export class GoalService {
 
 
 	// Get goals for current user
-	// throws: error if user is not logged in
+	// throws: NotLoggedInError if user is not logged in
 	getGoals(): Observable<Goal[]> {
 
 		// Fetch user id from login service
@@ -46,7 +46,8 @@ export class GoalService {
 		return this.http.get<Goal>(url)
 	}
 	addGoal(goal: Goal): Observable<Goal> {
-		return this.http.post(this.goalsUrl, goal, { 'responseType': 'text' }).pipe(
+		let userid = this.loginService.getUserId()
+		return this.http.post(this.goalsUrl, { goal: goal, userid: userid }, { 'responseType': 'text' }).pipe(
 			tap((resp: Goal) => console.log("got resp: ", resp, "type: ", typeof (resp))),
 			tap((newGoal: Goal) => this.log(`added hero w/ id=${newGoal.id}`))
 		);
